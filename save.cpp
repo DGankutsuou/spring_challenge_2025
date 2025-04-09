@@ -84,28 +84,25 @@ void    print_map(int board[3][3])
 }
 */
 
-bool    is_end_game(int board[3][3])
+bool    is_end_game(int board)
 {
-    int value = 1;
-
-    value = value * board[0][0] * board[0][1] * board[0][2]
-    * board[1][0] * board[1][1] * board[1][2]
-    * board[2][0] * board[2][1] * board[2][2];
-    return (value);
+    return ((board & 7) && (board & (7 << 3)) && (board & (7 << 6)) &&
+				(board & (7 << 9)) && (board & (7 << 12)) && (board & (7 << 15)) &&
+				(board & (7 << 18)) && (board & (7 << 21)) && (board & (7 << 24)));
 }
 
 int map_value(int board)
 {
-    int value = (board & 7);
+    int value = ((board >> 24) & 7);
 
-    value = value * 10 + ((board & (7 << (1 * 3))) >> (1 * 3));
-    value = value * 10 + ((board & (7 << (2 * 3))) >> (2 * 3));
-    value = value * 10 + ((board & (7 << (1 * 9))) >> (1 * 9));
-    value = value * 10 + ((board & (7 << (1 * 9 + 1 * 3))) >> (1 * 9 + 1 * 3));
-    value = value * 10 + ((board & (7 << (1 * 9 + 2 * 3))) >> (1 * 9 + 2 * 3));
-    value = value * 10 + ((board & (7 << (2 * 9))) >> (2 * 9));
-    value = value * 10 + ((board & (7 << (2 * 9 + 1 * 3))) >> (2 * 9 + 1 * 3));
-    value = value * 10 + ((board & (7 << (2 * 9 + 2 * 3))) >> (2 * 9 + 2 * 3));
+    value = value * 10 + ((board >> 21) & 7);
+    value = value * 10 + ((board >> 18) & 7);
+    value = value * 10 + ((board >> 15) & 7);
+    value = value * 10 + ((board >> 12) & 7);
+    value = value * 10 + ((board >> 9) & 7);
+    value = value * 10 + ((board >> 6) & 7);
+    value = value * 10 + ((board >> 3) & 7);
+    value = value * 10 + (board & 7);
     return (value);
 }
 
