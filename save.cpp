@@ -15,7 +15,7 @@ using namespace std;
 
 #define TABLE_SIZE 1 << 20
 
-int calculate(int &board, int moves, int &depth);
+int calculate(uint64_t board, uint64_t moves, int &depth);
 
 unordered_map<uint64_t, int> memory;
 
@@ -84,14 +84,14 @@ void    print_map(int board[3][3])
 }
 */
 
-bool is_end_game(int &board)
+bool is_end_game(uint64_t board)
 {
 	return ((board & 7) && (board & (7 << 3)) && (board & (7 << 6)) &&
 			(board & (7 << 9)) && (board & (7 << 12)) && (board & (7 << 15)) &&
 			(board & (7 << 18)) && (board & (7 << 21)) && (board & (7 << 24)));
 }
 
-int map_value(int &board)
+int map_value(uint64_t board)
 {
 	int value = (board & 7);
 
@@ -137,7 +137,7 @@ void copy_map(int copy[3][3], int board[3][3])
 }
 */
 
-int calculate_cases(int &copy, int &board, int &y, int &x, int moves, int &depth, int &cases)
+int calculate_cases(uint64_t &copy, uint64_t board, int &y, int &x, uint64_t moves, int &depth, int &cases)
 {
 	int final_result = 0;
 
@@ -253,21 +253,22 @@ int calculate_cases(int &copy, int &board, int &y, int &x, int moves, int &depth
 	return (final_result);
 }
 
-int calculate(int &board, int moves, int &depth)
+int calculate(uint64_t board, uint64_t moves, int &depth)
 {
     if (is_end_game(board))
 		return (map_value(board));
 	if (moves == depth)
 	{
-		return (map_value(board) % (1 << 30));
+		return (map_value(board));
 	}
-	unsigned long hashed = hasher(map_value(board), moves + 1);
-	if (memory.find(hashed) != memory.end())
+	//unsigned long hashed = hasher(map_value(board), moves);
+	board |= moves<<28;
+	if (memory.find(board) != memory.end())
 	{
-		return (memory[hashed]);
+		return (memory[board]);
 	}
 	int final_result = 0;
-	int copy;
+	uint64_t copy;
 	int cases;
 
 	moves++;
@@ -288,7 +289,7 @@ int calculate(int &board, int moves, int &depth)
 			}
 		}
 	}
-	memory[hashed] = final_result;
+	memory[board] = final_result;
 	return (final_result);
 }
 
@@ -298,9 +299,7 @@ int main()
 	cin >> depth;
 	cin.ignore();
 
-	int board = 0;
-
-	int result = 0;
+	uint64_t board = 0;
 	int cases = 0;
 	int maves = 0;
 	for (int i = 0; i < 3; i++)
