@@ -93,16 +93,16 @@ bool is_end_game(int board)
 
 int map_value(int board)
 {
-	int value = ((board >> 24) & 7);
+	int value = (board & 7);
 
-	value = value * 10 + ((board >> 21) & 7);
-	value = value * 10 + ((board >> 18) & 7);
-	value = value * 10 + ((board >> 15) & 7);
-	value = value * 10 + ((board >> 12) & 7);
-	value = value * 10 + ((board >> 9) & 7);
-	value = value * 10 + ((board >> 6) & 7);
 	value = value * 10 + ((board >> 3) & 7);
-	value = value * 10 + (board & 7);
+	value = value * 10 + ((board >> 6) & 7);
+	value = value * 10 + ((board >> 9) & 7);
+	value = value * 10 + ((board >> 12) & 7);
+	value = value * 10 + ((board >> 15) & 7);
+	value = value * 10 + ((board >> 18) & 7);
+	value = value * 10 + ((board >> 21) & 7);
+	value = value * 10 + ((board >> 24) & 7);
 	return (value);
 }
 
@@ -136,7 +136,7 @@ void copy_map(int copy[3][3], int board[3][3])
 	copy[2][2] = board[2][2];
 }
 */
-
+/*
 int calculate_cases(int copy, int board, int y, int x, int moves, int depth, int &cases)
 {
 	int final_result = 0;
@@ -145,7 +145,7 @@ int calculate_cases(int copy, int board, int y, int x, int moves, int depth, int
 	{
 		copy = board;
 		cases++;
-		copy[y][x] = copy[y][x + 1] + copy[y][x - 1];
+		copy |= ((7 << (y * 9 + (x + 1) * 3)) | (7 << (y * 9 + (x - 1) * 3)));
 		copy &= ~(7 << (y * 9 + (x + 1) * 3));
 		copy &= ~(7 << (y * 9 + (x - 1) * 3));
 		final_result = (final_result + calculate(copy, moves, depth)) % (1 << 30);
@@ -252,10 +252,12 @@ int calculate_cases(int copy, int board, int y, int x, int moves, int depth, int
 	}
 	return (final_result);
 }
+*/
 
 int calculate(int board, int moves, int depth)
 {
 	// print_map(board);
+    cerr << map_value(board) << endl;
 	unsigned long hashed = hasher(map_value(board), moves + 1);
 	if (memory.find(hashed) != memory.end())
 	{
@@ -268,7 +270,7 @@ int calculate(int board, int moves, int depth)
 	//     return (my_memory[idx].result);
 	// }
 	int final_result = 0;
-	int copy[3][3];
+	int copy;
 	int cases = 0;
 
 	if (is_end_game(board))
@@ -282,15 +284,16 @@ int calculate(int board, int moves, int depth)
 	{
 		for (int j = 0; j < 3; j++)
 		{
-			if (board[i][j] == 0)
+			if (!((board >> (i * 9 + j * 3)) & 7))
 			{
 				// copy = board;
-				final_result = (final_result + calculate_cases(copy, board, i, j, moves, depth, cases)) % (1 << 30);
+				//final_result = (final_result + calculate_cases(copy, board, i, j, moves, depth, cases)) % (1 << 30);
 				if (cases == 0)
 				{
-					board[i][j] = 1;
-					final_result = (final_result + calculate(board, moves, depth)) % (1 << 30);
-					board[i][j] = 0;
+					copy |= (1 << (i * 9 + j * 3));
+                    cerr << map_value(board) << endl;
+                    final_result = (final_result + calculate(copy, moves, depth)) % (1 << 30);
+					copy = board;
 				}
 				cases = 0;
 			}
@@ -319,8 +322,9 @@ int main()
 			int value;
 			cin >> value;
 			cin.ignore();
+            cerr << value << " ";
 			board |= (value << (j * 3 + i * 9));
-			cerr << (board >> (j * 3 + i * 9));
+			//cerr << (board >> (j * 3 + i * 9));
 		}
 		cerr << endl;
 	}
