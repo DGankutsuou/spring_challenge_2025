@@ -136,7 +136,7 @@ void copy_map(int copy[3][3], int board[3][3])
 	copy[2][2] = board[2][2];
 }
 */
-/*
+
 int calculate_cases(int copy, int board, int y, int x, int moves, int depth, int &cases)
 {
 	int final_result = 0;
@@ -252,13 +252,11 @@ int calculate_cases(int copy, int board, int y, int x, int moves, int depth, int
 	}
 	return (final_result);
 }
-*/
 
 int calculate(int board, int moves, int depth)
 {
 	// print_map(board);
-    cerr << map_value(board) << endl;
-	unsigned long hashed = hasher(map_value(board), moves + 1);
+	unsigned long hashed = hasher(board, moves + 1);
 	if (memory.find(hashed) != memory.end())
 	{
 		return (memory[hashed]);
@@ -277,6 +275,7 @@ int calculate(int board, int moves, int depth)
 		return (map_value(board));
 	if (moves == depth)
 	{
+		cerr << "memorized_state" << endl;
 		return (map_value(board) % (1 << 30));
 	}
 	moves++;
@@ -286,12 +285,13 @@ int calculate(int board, int moves, int depth)
 		{
 			if (!((board >> (i * 9 + j * 3)) & 7))
 			{
-				// copy = board;
+				cerr << i << " " << j << endl;
 				//final_result = (final_result + calculate_cases(copy, board, i, j, moves, depth, cases)) % (1 << 30);
 				if (cases == 0)
 				{
+					copy = board;
 					copy |= (1 << (i * 9 + j * 3));
-                    cerr << map_value(board) << endl;
+                    cerr << map_value(copy) << endl;
                     final_result = (final_result + calculate(copy, moves, depth)) % (1 << 30);
 					copy = board;
 				}
@@ -322,9 +322,9 @@ int main()
 			int value;
 			cin >> value;
 			cin.ignore();
-            cerr << value << " ";
+           // cerr << value << " ";
 			board |= (value << (j * 3 + i * 9));
-			//cerr << (board >> (j * 3 + i * 9));
+			cerr << (board >> (j * 3 + i * 9));
 		}
 		cerr << endl;
 	}
