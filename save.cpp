@@ -15,7 +15,7 @@ using namespace std;
 
 #define TABLE_SIZE 1 << 20
 
-int calculate(uint64_t board, uint64_t moves, int &depth);
+int calculate(uint64_t &board, int moves, int &depth);
 
 unordered_map<uint64_t, int> memory;
 
@@ -84,14 +84,14 @@ void    print_map(int board[3][3])
 }
 */
 
-bool is_end_game(uint64_t board)
+bool is_end_game(uint64_t &board)
 {
 	return ((board & 7) && (board & (7 << 3)) && (board & (7 << 6)) &&
 			(board & (7 << 9)) && (board & (7 << 12)) && (board & (7 << 15)) &&
 			(board & (7 << 18)) && (board & (7 << 21)) && (board & (7 << 24)));
 }
 
-int map_value(uint64_t board)
+int map_value(uint64_t &board)
 {
 	int value = (board & 7);
 
@@ -104,22 +104,6 @@ int map_value(uint64_t board)
 	value = value * 10 + ((board >> 21) & 7);
 	value = value * 10 + ((board >> 24) & 7);
 	return (value);
-}
-
-uint64_t hasher(int value, int key)
-{
-	uint64_t h;
-	uint64_t k;
-
-	h = static_cast<uint64_t>(value);
-	k = static_cast<uint64_t>(key);
-	h = h * 0xDEADBEEFDEADBEEF + k * 0x123456789ABCDEF;
-	h ^= (h >> 33);
-	h *= 0xff51afd7ed558ccd;
-	h ^= (h >> 33);
-	h *= 0xc4ceb9fe1a85ec53;
-	h ^= (h >> 33);
-	return (h);
 }
 
 /*
@@ -137,7 +121,7 @@ void copy_map(int copy[3][3], int board[3][3])
 }
 */
 
-int calculate_cases(uint64_t &copy, uint64_t board, int &y, int &x, uint64_t moves, int &depth, int &cases)
+int calculate_cases(uint64_t &copy, uint64_t &board, int &y, int &x, int moves, int &depth, int &cases)
 {
 	int final_result = 0;
 
@@ -253,7 +237,7 @@ int calculate_cases(uint64_t &copy, uint64_t board, int &y, int &x, uint64_t mov
 	return (final_result);
 }
 
-int calculate(uint64_t board, uint64_t moves, int &depth)
+int calculate(uint64_t &board, int moves, int &depth)
 {
     if (is_end_game(board))
 		return (map_value(board));
@@ -261,11 +245,10 @@ int calculate(uint64_t board, uint64_t moves, int &depth)
 	{
 		return (map_value(board));
 	}
-	//unsigned long hashed = hasher(map_value(board), moves);
-	board |= moves<<28;
-	if (memory.find(board) != memory.end())
+	uint64_t hashed = board<<8 | moves;
+	if (memory.find(hashed) != memory.end())
 	{
-		return (memory[board]);
+		return (memory[hashed]);
 	}
 	int final_result = 0;
 	uint64_t copy;
@@ -289,7 +272,7 @@ int calculate(uint64_t board, uint64_t moves, int &depth)
 			}
 		}
 	}
-	memory[board] = final_result;
+	memory[hashed] = final_result;
 	return (final_result);
 }
 
