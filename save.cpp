@@ -173,7 +173,7 @@ int calculate_cases(int copy, int board, int y, int x, int moves, int depth, int
 	{
 		copy = board;
 		cases++;
-		copy |= ((((board>>((y + 1) * 9 + x * 3)) & 7) + ((board>>(y * 9 + (x - 1) * 3)) & 7))<<(y * 9 + x * 3));
+		copy |= ((((board>>((y + 1) * 9 + x * 3)) & 7) + ((board>>(y * 9 + (x + 1) * 3)) & 7))<<(y * 9 + x * 3));
 		copy &= ~(7 << (y * 9 + (x + 1) * 3));
 		copy &= ~(7 << ((y + 1) * 9 + x * 3));
 		final_result = (final_result + calculate(copy, moves, depth)) % (1 << 30);
@@ -255,28 +255,21 @@ int calculate_cases(int copy, int board, int y, int x, int moves, int depth, int
 
 int calculate(int board, int moves, int depth)
 {
-	// print_map(board);
-	unsigned long hashed = hasher(board, moves + 1);
-	if (memory.find(hashed) != memory.end())
-	{
-		return (memory[hashed]);
-	}
-	// int idx = get(hashed);
-	// if (idx != -1)
-	// {
-	//     cerr << "memorized_state" << endl;
-	//     return (my_memory[idx].result);
-	// }
-	int final_result = 0;
-	int copy;
-	int cases = 0;
-
-	if (is_end_game(board))
+    if (is_end_game(board))
 		return (map_value(board));
 	if (moves == depth)
 	{
 		return (map_value(board) % (1 << 30));
 	}
+	unsigned long hashed = hasher(map_value(board), moves + 1);
+	if (memory.find(hashed) != memory.end())
+	{
+		return (memory[hashed]);
+	}
+	int final_result = 0;
+	int copy;
+	int cases;
+
 	moves++;
 	for (int i = 0; i < 3; i++)
 	{
@@ -284,20 +277,18 @@ int calculate(int board, int moves, int depth)
 		{
 			if (!((board >> (i * 9 + j * 3)) & 7))
 			{
+                cases = 0;
 				final_result = (final_result + calculate_cases(copy, board, i, j, moves, depth, cases)) % (1 << 30);
 				if (cases == 0)
 				{
 					copy = board;
 					copy |= (1 << (i * 9 + j * 3));
                     final_result = (final_result + calculate(copy, moves, depth)) % (1 << 30);
-					copy = board;
 				}
-				cases = 0;
 			}
 		}
 	}
 	memory[hashed] = final_result;
-	// insert(hashed, final_result);
 	return (final_result);
 }
 
@@ -319,13 +310,12 @@ int main()
 			int value;
 			cin >> value;
 			cin.ignore();
-           // cerr << value << " ";
+            //cerr << value << " ";
 			board |= (value << (j * 3 + i * 9));
-			//cerr << (board >> (j * 3 + i * 9));
 		}
 		//cerr << endl;
 	}
-	// cerr << ((board & (7 << (1 * 3 + 1 * 9))) >> (1 * 3 + 1 * 9)) << endl;
+	//cerr << depth << endl;
 
 	// Write an action using cout. DON'T FORGET THE "<< endl"
 	// To debug: cerr << "Debug messages..." << endl;

@@ -212,6 +212,12 @@ int    calculate_cases(int copy[3][3], int map[3][3], int y, int x, int moves, i
 int    calculate(int map[3][3], int moves, int depth)
 {
    // print_map(map);
+    if (moves == depth)
+    {
+       return (map_value(map) % (1<<30));
+    }
+    if (is_end_game(map))
+        return (map_value(map));
     unsigned long   hashed = hasher(map_value(map), moves + 1);
     if (memory.find(hashed) != memory.end())
     {
@@ -221,12 +227,6 @@ int    calculate(int map[3][3], int moves, int depth)
     int copy[3][3];
     int cases = 0;
 
-    if (is_end_game(map))
-        return (map_value(map));
-    if (moves == depth)
-    {
-        return (map_value(map) % (1<<30));
-    }
     moves++;
     for (int i = 0; i < 3; i++)
     {
