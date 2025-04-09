@@ -104,7 +104,7 @@ int    calculate_cases(int copy[3][3], int map[3][3], int y, int x, int moves, i
         copy[y][x] = copy[y][x + 1] + copy[y][x - 1];
         copy[y][x + 1] = 0;
         copy[y][x - 1] = 0;
-        final_result = (final_result + calculate(copy, moves, depth)) % (int)pow(2, 30);
+        final_result = (final_result + calculate(copy, moves, depth)) % (1<<30);
     }
     if (y + 1 < 3 && y - 1 >= 0 && map[y + 1][x] != 0 && map[y - 1][x] != 0 && map[y + 1][x] + map[y - 1][x] <= 6)
     {
@@ -113,7 +113,7 @@ int    calculate_cases(int copy[3][3], int map[3][3], int y, int x, int moves, i
         copy[y][x] = copy[y + 1][x] + copy[y - 1][x];
         copy[y + 1][x] = 0;
         copy[y - 1][x] = 0;
-        final_result = (final_result + calculate(copy, moves, depth)) % (int)pow(2, 30);
+        final_result = (final_result + calculate(copy, moves, depth)) % (1<<30);
     }
     ///////////////////////////////////////////////////////////////////////////////////
     if (y + 1 < 3 && x - 1 >= 0 && map[y + 1][x] && map[y][x - 1] && map[y + 1][x] + map[y][x - 1] <= 6)
@@ -123,7 +123,7 @@ int    calculate_cases(int copy[3][3], int map[3][3], int y, int x, int moves, i
         copy[y][x] = copy[y + 1][x] + copy[y][x - 1];
         copy[y + 1][x] = 0;
         copy[y][x - 1] = 0;
-        final_result = (final_result + calculate(copy, moves, depth)) % (int)pow(2, 30);
+        final_result = (final_result + calculate(copy, moves, depth)) % (1<<30);
     }
     if (x + 1 < 3 && y + 1 < 3 && map[y + 1][x] && map[y][x + 1] && map[y + 1][x] + map[y][x + 1] <= 6)
     {
@@ -132,7 +132,7 @@ int    calculate_cases(int copy[3][3], int map[3][3], int y, int x, int moves, i
         copy[y][x] = copy[y + 1][x] + copy[y][x + 1];
         copy[y + 1][x] = 0;
         copy[y][x + 1] = 0;
-        final_result = (final_result + calculate(copy, moves, depth)) % (int)pow(2, 30);
+        final_result = (final_result + calculate(copy, moves, depth)) % (1<<30);
     }
     ///////////////////////////////////////////////////////////////////////////////////
     if (x - 1 >= 0 && y - 1 >= 0 && map[y - 1][x] && map[y][x - 1] && map[y - 1][x] + map[y][x - 1] <= 6)
@@ -142,7 +142,7 @@ int    calculate_cases(int copy[3][3], int map[3][3], int y, int x, int moves, i
         copy[y][x] = copy[y - 1][x] + copy[y][x - 1];
         copy[y - 1][x] = 0;
         copy[y][x - 1] = 0;
-        final_result = (final_result + calculate(copy, moves, depth)) % (int)pow(2, 30);
+        final_result = (final_result + calculate(copy, moves, depth)) % (1<<30);
     }
     if (x + 1 < 3 && y - 1 >= 0 && map[y - 1][x] && map[y][x + 1] && map[y - 1][x] + map[y][x + 1] <= 6)
     {
@@ -151,7 +151,7 @@ int    calculate_cases(int copy[3][3], int map[3][3], int y, int x, int moves, i
         copy[y][x] = copy[y - 1][x] + copy[y][x + 1];
         copy[y - 1][x] = 0;
         copy[y][x + 1] = 0;
-        final_result = (final_result + calculate(copy, moves, depth)) % (int)pow(2, 30);
+        final_result = (final_result + calculate(copy, moves, depth)) % (1<<30);
     }
     ///////////////////////////////////////////////////////////////////////////////////
     if (x + 1 < 3 && x - 1 >= 0 && y + 1 < 3 && y - 1 >= 0 && map[y - 1][x] && map[y + 1][x] && map[y][x + 1] && map[y][x - 1] && map[y - 1][x] + map[y][x + 1] + map[y + 1][x] + map[y][x - 1] <= 6)
@@ -163,7 +163,7 @@ int    calculate_cases(int copy[3][3], int map[3][3], int y, int x, int moves, i
         copy[y][x + 1] = 0;
         copy[y + 1][x] = 0;
         copy[y][x - 1] = 0;
-        final_result = (final_result + calculate(copy, moves, depth)) % (int)pow(2, 30);
+        final_result = (final_result + calculate(copy, moves, depth)) % (1<<30);
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     if (x - 1 >= 0 && y + 1 < 3 && y - 1 >= 0 && map[y - 1][x] && map[y + 1][x] && map[y][x - 1] && map[y - 1][x] + map[y + 1][x] + map[y][x - 1] <= 6)
@@ -174,7 +174,7 @@ int    calculate_cases(int copy[3][3], int map[3][3], int y, int x, int moves, i
         copy[y - 1][x] = 0;
         copy[y + 1][x] = 0;
         copy[y][x - 1] = 0;
-        final_result = (final_result + calculate(copy, moves, depth)) % (int)pow(2, 30);
+        final_result = (final_result + calculate(copy, moves, depth)) % (1<<30);
     }
     if (x + 1 < 3 && y + 1 < 3 && y - 1 >= 0 && map[y - 1][x] && map[y + 1][x] && map[y][x + 1] && map[y - 1][x] + map[y][x + 1] + map[y + 1][x] <= 6)
     {
@@ -184,7 +184,7 @@ int    calculate_cases(int copy[3][3], int map[3][3], int y, int x, int moves, i
         copy[y - 1][x] = 0;
         copy[y][x + 1] = 0;
         copy[y + 1][x] = 0;
-        final_result = (final_result + calculate(copy, moves, depth)) % (int)pow(2, 30);
+        final_result = (final_result + calculate(copy, moves, depth)) % (1<<30);
     }
     if (x + 1 < 3 && x - 1 >= 0 && y - 1 >= 0 && map[y - 1][x] && map[y][x + 1] && map[y][x - 1] && map[y - 1][x] + map[y][x + 1] + map[y][x - 1] <= 6)
     {
@@ -194,7 +194,7 @@ int    calculate_cases(int copy[3][3], int map[3][3], int y, int x, int moves, i
         copy[y - 1][x] = 0;
         copy[y][x + 1] = 0;
         copy[y][x - 1] = 0;
-        final_result = (final_result + calculate(copy, moves, depth)) % (int)pow(2, 30);
+        final_result = (final_result + calculate(copy, moves, depth)) % (1<<30);
     }
     if (x + 1 < 3 && x - 1 >= 0 && y + 1 < 3 && map[y + 1][x] && map[y][x + 1] && map[y][x - 1] && map[y][x + 1] + map[y + 1][x] + map[y][x - 1] <= 6)
     {
@@ -204,7 +204,7 @@ int    calculate_cases(int copy[3][3], int map[3][3], int y, int x, int moves, i
         copy[y][x + 1] = 0;
         copy[y + 1][x] = 0;
         copy[y][x - 1] = 0;
-        final_result = (final_result + calculate(copy, moves, depth)) % (int)pow(2, 30);
+        final_result = (final_result + calculate(copy, moves, depth)) % (1<<30);
     }
     return (final_result);
 }
@@ -225,7 +225,7 @@ int    calculate(int map[3][3], int moves, int depth)
         return (map_value(map));
     if (moves == depth)
     {
-        return (map_value(map) % (int)pow(2, 30));
+        return (map_value(map) % (1<<30));
     }
     moves++;
     for (int i = 0; i < 3; i++)
@@ -235,11 +235,11 @@ int    calculate(int map[3][3], int moves, int depth)
             if (map[i][j] == 0)
             {
                 //copy_map(copy, map);
-                final_result = (final_result + calculate_cases(copy, map, i, j, moves, depth, cases)) % (int)pow(2, 30);
+                final_result = (final_result + calculate_cases(copy, map, i, j, moves, depth, cases)) % (1<<30);
                 if (cases == 0)
                 {
                     map[i][j] = 1;
-                    final_result = (final_result + calculate(map, moves, depth)) % (int)pow(2, 30);
+                    final_result = (final_result + calculate(map, moves, depth)) % (1<<30);
                     map[i][j] = 0;
                 }
                 cases = 0;
