@@ -143,13 +143,11 @@ int calculate_cases(int copy, int board, int y, int x, int moves, int depth, int
 
 	if (x + 1 < 3 && x - 1 >= 0 && ((board >> (y * 9 + (x + 1) * 3)) & 7) && ((board >> (y * 9 + (x - 1) * 3)) & 7) && ((board >> (y * 9 + (x + 1) * 3)) & 7) + ((board >> (y * 9 + (x - 1) * 3)) & 7) <= 6)
 	{
-		cerr << "hryyyyyyyyyyyyyyyyyy\n";
 		copy = board;
 		cases++;
 		copy |= ((((board>>(y * 9 + (x + 1) * 3)) & 7) + ((board>>(y * 9 + (x - 1) * 3)) & 7))<<(y * 9 + x * 3));
 		copy &= ~(7 << (y * 9 + (x + 1) * 3));
 		copy &= ~(7 << (y * 9 + (x - 1) * 3));
-		cerr << ((board>>(y * 9 + (x - 1) * 3)) & 7) << endl;
 		final_result = (final_result + calculate(copy, moves, depth)) % (1 << 30);
 	}
 	if (y + 1 < 3 && y - 1 >= 0 && ((board >> ((y + 1) * 9 + x * 3)) & 7) != 0 && ((board >> ((y - 1) * 9 + x * 3)) & 7) != 0 && ((board >> ((y + 1) * 9 + x * 3)) & 7) + ((board >> ((y - 1) * 9 + x * 3)) & 7) <= 6)
@@ -277,7 +275,6 @@ int calculate(int board, int moves, int depth)
 		return (map_value(board));
 	if (moves == depth)
 	{
-		cerr << "memorized_state" << endl;
 		return (map_value(board) % (1 << 30));
 	}
 	moves++;
@@ -287,13 +284,11 @@ int calculate(int board, int moves, int depth)
 		{
 			if (!((board >> (i * 9 + j * 3)) & 7))
 			{
-				cerr << i << " " << j << endl;
 				final_result = (final_result + calculate_cases(copy, board, i, j, moves, depth, cases)) % (1 << 30);
 				if (cases == 0)
 				{
 					copy = board;
 					copy |= (1 << (i * 9 + j * 3));
-					cerr << map_value(copy) << endl;
                     final_result = (final_result + calculate(copy, moves, depth)) % (1 << 30);
 					copy = board;
 				}
@@ -326,9 +321,9 @@ int main()
 			cin.ignore();
            // cerr << value << " ";
 			board |= (value << (j * 3 + i * 9));
-			cerr << (board >> (j * 3 + i * 9));
+			//cerr << (board >> (j * 3 + i * 9));
 		}
-		cerr << endl;
+		//cerr << endl;
 	}
 	// cerr << ((board & (7 << (1 * 3 + 1 * 9))) >> (1 * 3 + 1 * 9)) << endl;
 
