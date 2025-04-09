@@ -154,7 +154,7 @@ int calculate_cases(int copy, int board, int y, int x, int moves, int depth, int
 	{
 		copy = board;
 		cases++;
-		copy[y][x] = copy[y + 1][x] + copy[y - 1][x];
+		copy |= ((7 << (y * 9 + (x + 1) * 3)) | (7 << (y * 9 + (x - 1) * 3)));
 		copy &= ~(7 << ((y + 1) * 9 + x * 3));
 		copy &= ~(7 << ((y - 1) * 9 + x * 3));
 		final_result = (final_result + calculate(copy, moves, depth)) % (1 << 30);
@@ -164,7 +164,7 @@ int calculate_cases(int copy, int board, int y, int x, int moves, int depth, int
 	{
 		copy = board;
 		cases++;
-		copy[y][x] = copy[y + 1][x] + copy[y][x - 1];
+		copy |= ((7 << (y * 9 + (x + 1) * 3)) | (7 << (y * 9 + (x - 1) * 3)));
 		copy &= ~(7 << ((y + 1) * 9 + x * 3));
 		copy &= ~(7 << (y * 9 + (x - 1) * 3));
 		final_result = (final_result + calculate(copy, moves, depth)) % (1 << 30);
@@ -173,7 +173,7 @@ int calculate_cases(int copy, int board, int y, int x, int moves, int depth, int
 	{
 		copy = board;
 		cases++;
-		copy[y][x] = copy[y + 1][x] + copy[y][x + 1];
+		copy |= ((7 << (y * 9 + (x + 1) * 3)) | (7 << (y * 9 + (x - 1) * 3)));
 		copy &= ~(7 << (y * 9 + (x + 1) * 3));
 		copy &= ~(7 << ((y + 1) * 9 + x * 3));
 		final_result = (final_result + calculate(copy, moves, depth)) % (1 << 30);
@@ -183,7 +183,7 @@ int calculate_cases(int copy, int board, int y, int x, int moves, int depth, int
 	{
 		copy = board;
 		cases++;
-		copy[y][x] = copy[y - 1][x] + copy[y][x - 1];
+		copy |= ((7 << (y * 9 + (x + 1) * 3)) | (7 << (y * 9 + (x - 1) * 3)));
 		copy &= ~(7 << ((y - 1) * 9 + x * 3));
 		copy &= ~(7 << (y * 9 + (x - 1) * 3));
 		final_result = (final_result + calculate(copy, moves, depth)) % (1 << 30);
@@ -192,7 +192,7 @@ int calculate_cases(int copy, int board, int y, int x, int moves, int depth, int
 	{
 		copy = board;
 		cases++;
-		copy[y][x] = copy[y - 1][x] + copy[y][x + 1];
+		copy |= ((7 << (y * 9 + (x + 1) * 3)) | (7 << (y * 9 + (x - 1) * 3)));
 		copy &= ~(7 << ((y - 1) * 9 + x * 3));
 		copy &= ~(7 << (y * 9 + (x + 1) * 3));
 		final_result = (final_result + calculate(copy, moves, depth)) % (1 << 30);
@@ -202,7 +202,7 @@ int calculate_cases(int copy, int board, int y, int x, int moves, int depth, int
 	{
 		copy = board;
 		cases++;
-		copy[y][x] = copy[y - 1][x] + copy[y][x + 1] + copy[y + 1][x] + copy[y][x - 1];
+		copy |= ((7 << (y * 9 + (x + 1) * 3)) | (7 << (y * 9 + (x - 1) * 3)));
 		copy &= ~(7 << ((y - 1) * 9 + x * 3));
 		copy &= ~(7 << ((y + 1) * 9 + x * 3));
 		copy &= ~(7 << (y * 9 + (x + 1) * 3));
@@ -214,7 +214,7 @@ int calculate_cases(int copy, int board, int y, int x, int moves, int depth, int
 	{
 		copy = board;
 		cases++;
-		copy[y][x] = copy[y - 1][x] + copy[y + 1][x] + copy[y][x - 1];
+		copy |= ((7 << (y * 9 + (x + 1) * 3)) | (7 << (y * 9 + (x - 1) * 3)));
 		copy &= ~(7 << ((y - 1) * 9 + x * 3));
 		copy &= ~(7 << ((y + 1) * 9 + x * 3));
 		copy &= ~(7 << (y * 9 + (x - 1) * 3));
@@ -224,7 +224,7 @@ int calculate_cases(int copy, int board, int y, int x, int moves, int depth, int
 	{
 		copy = board;
 		cases++;
-		copy[y][x] = copy[y - 1][x] + copy[y][x + 1] + copy[y + 1][x];
+		copy |= ((7 << (y * 9 + (x + 1) * 3)) | (7 << (y * 9 + (x - 1) * 3)));
 		copy &= ~(7 << ((y - 1) * 9 + x * 3));
 		copy &= ~(7 << ((y + 1) * 9 + x * 3));
 		copy &= ~(7 << (y * 9 + (x + 1) * 3));
@@ -234,7 +234,7 @@ int calculate_cases(int copy, int board, int y, int x, int moves, int depth, int
 	{
 		copy = board;
 		cases++;
-		copy[y][x] = copy[y - 1][x] + copy[y][x + 1] + copy[y][x - 1];
+		copy |= ((7 << (y * 9 + (x + 1) * 3)) | (7 << (y * 9 + (x - 1) * 3)));
 		copy &= ~(7 << ((y - 1) * 9 + x * 3));
 		copy &= ~(7 << (y * 9 + (x + 1) * 3));
 		copy &= ~(7 << (y * 9 + (x - 1) * 3));
@@ -244,7 +244,7 @@ int calculate_cases(int copy, int board, int y, int x, int moves, int depth, int
 	{
 		copy = board;
 		cases++;
-		copy[y][x] = copy[y][x + 1] + copy[y + 1][x] + copy[y][x - 1];
+		copy |= ((7 << (y * 9 + (x + 1) * 3)) | (7 << (y * 9 + (x - 1) * 3)));
 		copy &= ~(7 << ((y + 1) * 9 + x * 3));
 		copy &= ~(7 << (y * 9 + (x + 1) * 3));
 		copy &= ~(7 << (y * 9 + (x - 1) * 3));
@@ -286,7 +286,7 @@ int calculate(int board, int moves, int depth)
 			if (!((board >> (i * 9 + j * 3)) & 7))
 			{
 				cerr << i << " " << j << endl;
-				//final_result = (final_result + calculate_cases(copy, board, i, j, moves, depth, cases)) % (1 << 30);
+				final_result = (final_result + calculate_cases(copy, board, i, j, moves, depth, cases)) % (1 << 30);
 				if (cases == 0)
 				{
 					copy = board;
