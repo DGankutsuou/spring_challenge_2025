@@ -1,3 +1,17 @@
+#undef _GLIBCXX_DEBUG                // disable run-time bound checking, etc
+#pragma GCC optimize("Ofast,inline") // Ofast = O3,fast-math,allow-store-data-races,no-protect-parens
+
+#ifndef __POPCNT__ // not march=generic
+#endif
+
+#pragma GCC target("bmi,bmi2,lzcnt,popcnt")                      // bit manipulation
+#pragma GCC target("movbe")                                      // byte swap
+#pragma GCC target("aes,pclmul,rdrnd")                           // encryption
+#pragma GCC target("avx,avx2,f16c,fma,sse3,ssse3,sse4.1,sse4.2") // SIMD
+#pragma GCC optimize "Ofast,unroll-loops,omit-frame-pointer,inline"
+#pragma GCC option("arch=native", "tune=native", "no-zero-upper")
+#pragma GCC target("rdrnd", "popcnt", "avx", "bmi2")
+
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
