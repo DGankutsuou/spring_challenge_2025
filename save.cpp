@@ -32,9 +32,15 @@ using namespace std;
  * the standard input according to the problem statement.
  **/
 
-int calculate(uint64_t &board, int moves, int &depth);
 
-unordered_map<uint64_t, int> memory;
+ struct s_array
+ {
+	 int matrix[3][3];
+};
+
+s_array calculate(uint64_t &board, int moves, int &depth);
+
+unordered_map<uint64_t, s_array> memory;
 
 /*
 #define TABLE_SIZE 1<<20
