@@ -330,9 +330,15 @@ int calculate_cases(uint64_t &copy, uint64_t &board, int &y, int &x, int moves,
   return (res);
 }
 
-void past_2_maps() {}
+void past_2_maps()
+{
 
-s_array calculate(uint64_t &board, int moves, int &depth) {
+}
+
+
+
+s_array calculate(uint64_t &board, int moves, int &depth)
+{
   s_array res;
   if (moves == depth || is_end_game(board)) {
     res.matrix[0][0] = (board & 7);
