@@ -6,6 +6,60 @@
 #include <unordered_map>
 #include <cstdint>
 
+#include <iostream>
+#include <vector>
+#include <optional>
+#include <functional>
+
+template <typename Key, typename Value>
+class FastHashMap {
+private:
+    struct Entry {
+        Key key;
+        Value value;
+        bool occupied = false;
+    };
+
+    std::vector<Entry> table;
+    size_t capacity;
+    size_t size;
+
+    size_t hash(const Key& key) const {
+        return std::hash<Key>{}(key) % capacity;
+    }
+
+public:
+    FastHashMap(size_t initial_capacity = 128)
+        : capacity(initial_capacity), size(0), table(initial_capacity) {}
+
+    void insert(const Key& key, const Value& value) {
+        size_t index = hash(key);
+        while (table[index].occupied) {
+            if (table[index].key == key) {
+                table[index].value = value; // Overwrite
+                return;
+            }
+            index = (index + 1) % capacity;
+        }
+        table[index] = {key, value, true};
+        ++size;
+    }
+
+    std::optional<Value> get(const Key& key) const {
+        size_t index = hash(key);
+        size_t start = index;
+        while (table[index].occupied) {
+            if (table[index].key == key) {
+                return table[index].value;
+            }
+            index = (index + 1) % capacity;
+            if (index == start) break; // Full loop
+        }
+        return std::nullopt;
+    }
+};
+
+
 using namespace std;
 
 /**
@@ -13,13 +67,13 @@ using namespace std;
  * the standard input according to the problem statement.
  **/
 
-#define TABLE_SIZE 1 << 20
-
 int calculate(uint64_t &board, int moves, int &depth);
 
 unordered_map<uint64_t, int> memory;
 
-/*
+
+#define TABLE_SIZE 1<<20
+
 struct  s_board
 {
 	uint64_t map_value = -1;
@@ -66,7 +120,6 @@ int get(uint64_t key)
 	}
 	return (idx);
 }
-*/
 
 /*
 void    print_map(int board[3][3])
@@ -239,9 +292,7 @@ int calculate_cases(uint64_t &copy, uint64_t &board, int &y, int &x, int moves, 
 
 int calculate(uint64_t &board, int moves, int &depth)
 {
-    if (is_end_game(board))
-		return (map_value(board));
-	if (moves == depth)
+	if (moves == depth || is_end_game(board))
 	{
 		return (map_value(board));
 	}
@@ -285,19 +336,16 @@ int main()
 	uint64_t board = 0;
 	int cases = 0;
 	int maves = 0;
-	for (int i = 0; i < 3; i++)
-	{
-		for (int j = 0; j < 3; j++)
-		{
-			int value;
-			cin >> value;
-			cin.ignore();
-            //cerr << value << " ";
-			board |= (value << (j * 3 + i * 9));
-		}
-		//cerr << endl;
-	}
-	//cerr << depth << endl;
+	int value;
+	cin >> value; cin.ignore(); board |= (value);
+	cin >> value; cin.ignore(); board |= (value<<3);
+	cin >> value; cin.ignore(); board |= (value<<6);
+	cin >> value; cin.ignore(); board |= (value<<9);
+	cin >> value; cin.ignore(); board |= (value<<12);
+	cin >> value; cin.ignore(); board |= (value<<15);
+	cin >> value; cin.ignore(); board |= (value<<18);
+	cin >> value; cin.ignore(); board |= (value<<21);
+	cin >> value; cin.ignore(); board |= (value<<24);
 
 	// Write an action using cout. DON'T FORGET THE "<< endl"
 	// To debug: cerr << "Debug messages..." << endl;
