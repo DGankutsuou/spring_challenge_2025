@@ -13,17 +13,9 @@
 #pragma GCC target("rdrnd", "popcnt", "avx", "bmi2")
 
 #include <algorithm>
-#include <cmath>
 #include <cstdint>
 #include <iostream>
-#include <string>
 #include <unordered_map>
-#include <vector>
-
-#include <functional>
-#include <iostream>
-#include <optional>
-#include <vector>
 
 using namespace std;
 
@@ -146,7 +138,7 @@ void copy_map(int copy[3][3], int board[3][3])
 
 int calculate_cases(uint64_t &copy, uint64_t &board, int &y, int &x, int moves,
                     int &depth, int &cases) {
-  int final_result = 0;
+  int res = 0;
 
   if (x + 1 < 3 && x - 1 >= 0 && ((board >> (y * 9 + (x + 1) * 3)) & 7) &&
       ((board >> (y * 9 + (x - 1) * 3)) & 7) &&
@@ -160,7 +152,7 @@ int calculate_cases(uint64_t &copy, uint64_t &board, int &y, int &x, int moves,
              << (y * 9 + x * 3));
     copy &= ~(7 << (y * 9 + (x + 1) * 3));
     copy &= ~(7 << (y * 9 + (x - 1) * 3));
-    final_result = (final_result + calculate(copy, moves, depth)) % (1 << 30);
+    res = (res + calculate(copy, moves, depth)) % (1 << 30);
   }
   if (y + 1 < 3 && y - 1 >= 0 && ((board >> ((y + 1) * 9 + x * 3)) & 7) != 0 &&
       ((board >> ((y - 1) * 9 + x * 3)) & 7) != 0 &&
@@ -174,7 +166,7 @@ int calculate_cases(uint64_t &copy, uint64_t &board, int &y, int &x, int moves,
              << (y * 9 + x * 3));
     copy &= ~(7 << ((y + 1) * 9 + x * 3));
     copy &= ~(7 << ((y - 1) * 9 + x * 3));
-    final_result = (final_result + calculate(copy, moves, depth)) % (1 << 30);
+    res = (res + calculate(copy, moves, depth)) % (1 << 30);
   }
   ///////////////////////////////////////////////////////////////////////////////////
   if (y + 1 < 3 && x - 1 >= 0 && ((board >> ((y + 1) * 9 + x * 3)) & 7) &&
@@ -189,7 +181,7 @@ int calculate_cases(uint64_t &copy, uint64_t &board, int &y, int &x, int moves,
              << (y * 9 + x * 3));
     copy &= ~(7 << ((y + 1) * 9 + x * 3));
     copy &= ~(7 << (y * 9 + (x - 1) * 3));
-    final_result = (final_result + calculate(copy, moves, depth)) % (1 << 30);
+    res = (res + calculate(copy, moves, depth)) % (1 << 30);
   }
   if (x + 1 < 3 && y + 1 < 3 && ((board >> ((y + 1) * 9 + x * 3)) & 7) &&
       ((board >> (y * 9 + (x + 1) * 3)) & 7) &&
@@ -203,7 +195,7 @@ int calculate_cases(uint64_t &copy, uint64_t &board, int &y, int &x, int moves,
              << (y * 9 + x * 3));
     copy &= ~(7 << (y * 9 + (x + 1) * 3));
     copy &= ~(7 << ((y + 1) * 9 + x * 3));
-    final_result = (final_result + calculate(copy, moves, depth)) % (1 << 30);
+    res = (res + calculate(copy, moves, depth)) % (1 << 30);
   }
   ///////////////////////////////////////////////////////////////////////////////////
   if (x - 1 >= 0 && y - 1 >= 0 && ((board >> ((y - 1) * 9 + x * 3)) & 7) &&
@@ -218,7 +210,7 @@ int calculate_cases(uint64_t &copy, uint64_t &board, int &y, int &x, int moves,
              << (y * 9 + x * 3));
     copy &= ~(7 << ((y - 1) * 9 + x * 3));
     copy &= ~(7 << (y * 9 + (x - 1) * 3));
-    final_result = (final_result + calculate(copy, moves, depth)) % (1 << 30);
+    res = (res + calculate(copy, moves, depth)) % (1 << 30);
   }
   if (x + 1 < 3 && y - 1 >= 0 && ((board >> ((y - 1) * 9 + x * 3)) & 7) &&
       ((board >> (y * 9 + (x + 1) * 3)) & 7) &&
@@ -232,7 +224,7 @@ int calculate_cases(uint64_t &copy, uint64_t &board, int &y, int &x, int moves,
              << (y * 9 + x * 3));
     copy &= ~(7 << ((y - 1) * 9 + x * 3));
     copy &= ~(7 << (y * 9 + (x + 1) * 3));
-    final_result = (final_result + calculate(copy, moves, depth)) % (1 << 30);
+    res = (res + calculate(copy, moves, depth)) % (1 << 30);
   }
   ///////////////////////////////////////////////////////////////////////////////////
   if (x + 1 < 3 && x - 1 >= 0 && y + 1 < 3 && y - 1 >= 0 &&
@@ -256,7 +248,7 @@ int calculate_cases(uint64_t &copy, uint64_t &board, int &y, int &x, int moves,
     copy &= ~(7 << ((y + 1) * 9 + x * 3));
     copy &= ~(7 << (y * 9 + (x + 1) * 3));
     copy &= ~(7 << (y * 9 + (x - 1) * 3));
-    final_result = (final_result + calculate(copy, moves, depth)) % (1 << 30);
+    res = (res + calculate(copy, moves, depth)) % (1 << 30);
   }
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   if (x - 1 >= 0 && y + 1 < 3 && y - 1 >= 0 &&
@@ -276,7 +268,7 @@ int calculate_cases(uint64_t &copy, uint64_t &board, int &y, int &x, int moves,
     copy &= ~(7 << ((y - 1) * 9 + x * 3));
     copy &= ~(7 << ((y + 1) * 9 + x * 3));
     copy &= ~(7 << (y * 9 + (x - 1) * 3));
-    final_result = (final_result + calculate(copy, moves, depth)) % (1 << 30);
+    res = (res + calculate(copy, moves, depth)) % (1 << 30);
   }
   if (x + 1 < 3 && y + 1 < 3 && y - 1 >= 0 &&
       ((board >> ((y - 1) * 9 + x * 3)) & 7) &&
@@ -295,7 +287,7 @@ int calculate_cases(uint64_t &copy, uint64_t &board, int &y, int &x, int moves,
     copy &= ~(7 << ((y - 1) * 9 + x * 3));
     copy &= ~(7 << ((y + 1) * 9 + x * 3));
     copy &= ~(7 << (y * 9 + (x + 1) * 3));
-    final_result = (final_result + calculate(copy, moves, depth)) % (1 << 30);
+    res = (res + calculate(copy, moves, depth)) % (1 << 30);
   }
   if (x + 1 < 3 && x - 1 >= 0 && y - 1 >= 0 &&
       ((board >> ((y - 1) * 9 + x * 3)) & 7) &&
@@ -314,7 +306,7 @@ int calculate_cases(uint64_t &copy, uint64_t &board, int &y, int &x, int moves,
     copy &= ~(7 << ((y - 1) * 9 + x * 3));
     copy &= ~(7 << (y * 9 + (x + 1) * 3));
     copy &= ~(7 << (y * 9 + (x - 1) * 3));
-    final_result = (final_result + calculate(copy, moves, depth)) % (1 << 30);
+    res = (res + calculate(copy, moves, depth)) % (1 << 30);
   }
   if (x + 1 < 3 && x - 1 >= 0 && y + 1 < 3 &&
       ((board >> ((y + 1) * 9 + x * 3)) & 7) &&
@@ -333,26 +325,26 @@ int calculate_cases(uint64_t &copy, uint64_t &board, int &y, int &x, int moves,
     copy &= ~(7 << ((y + 1) * 9 + x * 3));
     copy &= ~(7 << (y * 9 + (x + 1) * 3));
     copy &= ~(7 << (y * 9 + (x - 1) * 3));
-    final_result = (final_result + calculate(copy, moves, depth)) % (1 << 30);
+    res = (res + calculate(copy, moves, depth)) % (1 << 30);
   }
-  return (final_result);
+  return (res);
 }
 
 void past_2_maps() {}
 
 s_array calculate(uint64_t &board, int moves, int &depth) {
-  s_array final_result;
+  s_array res;
   if (moves == depth || is_end_game(board)) {
-    final_result[0][0] = (board & 7);
-    final_result[0][1] = ((board >> 3) & 7);
-    final_result[0][2] = ((board >> 6) & 7);
-    final_result[1][0] = ((board >> 9) & 7);
-    final_result[1][1] = ((board >> 12) & 7);
-    final_result[1][2] = ((board >> 15) & 7);
-    final_result[2][0] = ((board >> 18) & 7);
-    final_result[2][1] = ((board >> 21) & 7);
-    final_result[2][2] = ((board >> 24) & 7);
-    return (final_result);
+    res.matrix[0][0] = (board & 7);
+    res.matrix[0][1] = ((board >> 3) & 7);
+    res.matrix[0][2] = ((board >> 6) & 7);
+    res.matrix[1][0] = ((board >> 9) & 7);
+    res.matrix[1][1] = ((board >> 12) & 7);
+    res.matrix[1][2] = ((board >> 15) & 7);
+    res.matrix[2][0] = ((board >> 18) & 7);
+    res.matrix[2][1] = ((board >> 21) & 7);
+    res.matrix[2][2] = ((board >> 24) & 7);
+    return (res);
   }
   uint64_t hashed = board << 8 | moves;
   if (memory.find(hashed) != memory.end()) {
@@ -366,20 +358,20 @@ s_array calculate(uint64_t &board, int moves, int &depth) {
     for (int j = 0; j < 3; j++) {
       if (!((board >> (i * 9 + j * 3)) & 7)) {
         cases = 0;
-        final_result = (final_result + calculate_cases(copy, board, i, j, moves,
+        res = (res + calculate_cases(copy, board, i, j, moves,
                                                        depth, cases)) %
                        (1 << 30);
         if (cases == 0) {
           copy = board;
           copy |= (1 << (i * 9 + j * 3));
-          final_result =
-              (final_result + calculate(copy, moves, depth)) % (1 << 30);
+          res =
+              (res + calculate(copy, moves, depth)) % (1 << 30);
         }
       }
     }
   }
-  memory[hashed] = final_result;
-  return (final_result);
+  memory[hashed] = res;
+  return (res);
 }
 
 int main() {
@@ -391,33 +383,15 @@ int main() {
   int cases = 0;
   int maves = 0;
   int value;
-  cin >> value;
-  cin.ignore();
-  board |= (value);
-  cin >> value;
-  cin.ignore();
-  board |= (value << 3);
-  cin >> value;
-  cin.ignore();
-  board |= (value << 6);
-  cin >> value;
-  cin.ignore();
-  board |= (value << 9);
-  cin >> value;
-  cin.ignore();
-  board |= (value << 12);
-  cin >> value;
-  cin.ignore();
-  board |= (value << 15);
-  cin >> value;
-  cin.ignore();
-  board |= (value << 18);
-  cin >> value;
-  cin.ignore();
-  board |= (value << 21);
-  cin >> value;
-  cin.ignore();
-  board |= (value << 24);
+  cin >> value; cin.ignore(); board |= (value);
+  cin >> value; cin.ignore(); board |= (value << 3);
+  cin >> value; cin.ignore(); board |= (value << 6);
+  cin >> value; cin.ignore(); board |= (value << 9);
+  cin >> value; cin.ignore(); board |= (value << 12);
+  cin >> value; cin.ignore(); board |= (value << 15);
+  cin >> value; cin.ignore(); board |= (value << 18);
+  cin >> value; cin.ignore(); board |= (value << 21);
+  cin >> value; cin.ignore(); board |= (value << 24);
 
   // Write an action using cout. DON'T FORGET THE "<< endl"
   // To debug: cerr << "Debug messages..." << endl;
