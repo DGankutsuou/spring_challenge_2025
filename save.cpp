@@ -177,10 +177,9 @@ void rrm(uint32_t map[3][3])
     map[2][2] = save;
 }
 
-s_array calculate_cases(uint64_t &copy, uint64_t &board, int &y, int &x, int moves,
+s_array calculate_cases(s_array &res, uint64_t &copy, uint64_t &board, int &y, int &x, int moves,
                     int &depth, int &cases)
 {
-  s_array res;
 
   if (x + 1 < 3 && x - 1 >= 0 && ((board >> (y * 9 + (x + 1) * 3)) & 7) &&
       ((board >> (y * 9 + (x - 1) * 3)) & 7) &&
@@ -389,9 +388,12 @@ s_array calculate(uint64_t &board, int moves, int &depth)
           return (res);
         }
         uint64_t hashed = board << 8 | moves;
-        if (memory.find(hashed) != memory.end())
+        #pragma GCC unroll 9
+        for (short i = 0; i < 2; i++)
         {
-                return (memory[hashed]);
+                if (memory.find(hashed) != memory.end())
+                        return (memory[hashed]);
+                rm(res.matrix);
         }
 
         res.matrix[0][0] = 0;
@@ -403,28 +405,28 @@ s_array calculate(uint64_t &board, int moves, int &depth)
         res.matrix[2][0] = 0;
         res.matrix[2][1] = 0;
         res.matrix[2][2] = 0;
-        s_array res2;
 
   uint64_t copy;
   int cases;
 
   moves++;
+  #pragma GCC unroll 3
   for (int i = 0; i < 3; i++)
   {
+        #pragma GCC unroll 3
     for (int j = 0; j < 3; j++)
     {
       if (!((board >> (i * 9 + j * 3)) & 7))
       {
         cases = 0;
-        res2 = calculate_cases(copy, board, i, j, moves, depth, cases);
-        if (cases)
-                past_2_maps(res.matrix, res2.matrix);
+        calculate_cases(res ,copy, board, i, j, moves, depth, cases);
+        //if (cases)
+        //        past_2_maps(res.matrix, res2.matrix);
         if (!cases)
         {
                 copy = board;
                 copy |= (1 << (i * 9 + j * 3));
                 past_2_maps(res.matrix, calculate(copy, moves, depth).matrix);
-                print_map(res.matrix);
         }
       }
     }
@@ -468,7 +470,6 @@ int main() {
   // 	((board >> 24) & 7));
 
         map = calculate(board, 0, depth);
-        print_map(map.matrix);
         final_result = (final_result + (map.matrix[0][0] * 100000000) % (1<<30)) % (1<<30);
         final_result = (final_result + (map.matrix[0][1] * 10000000) % (1<<30)) % (1<<30);
         final_result = (final_result + (map.matrix[0][2] * 1000000) % (1<<30)) % (1<<30);
