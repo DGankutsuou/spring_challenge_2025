@@ -264,8 +264,10 @@ int calculate(uint64_t &board, int moves, int &depth)
 	int cases;
 
 	moves++;
+        #pragma GCC unroll 3
 	for (int i = 0; i < 3; i++)
 	{
+                #pragma GCC unroll 3
 		for (int j = 0; j < 3; j++)
 		{
 			if (!((board >> (i * 9 + j * 3)) & 7))
