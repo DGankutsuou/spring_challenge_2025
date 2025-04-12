@@ -1,0 +1,125 @@
+// Data structures
+struct arr9 { array of 9 integers }
+struct arr8 { array of 8 integers }
+struct arr2 { array of 2 integers }
+
+// Custom hash table for memoization
+class CustomHashTable:
+    // Efficiently stores and retrieves (key, value) pairs
+    // Key: 64-bit integer (state + depth)
+    // Value: arr9 (game state representation)
+
+// Constants
+MOD = 2^30
+BOARD_SIZE = 3
+ADJACENTS = predefined 2D array of adjacent cell positions
+VALID_MASKS = array of bitmasks with at least 2 bits set
+SYMMETRY_PERMUTATIONS = 2D arrays defining board symmetries
+
+// Main function
+function simulateCephalopods(state, depth):
+    // Base cases
+    if boardIsFull(state) or depth == 0:
+        return calculateHash(state)  // Convert state to array format
+
+    // Get canonical form of the state to exploit symmetry
+    canonicalInfo = canonAndIndex(state)
+    canonicalState = canonicalInfo[0]
+    symmetryIndex = canonicalInfo[1]
+
+    // Create key for memoization
+    memoKey = (canonicalState << 32) | depth
+
+    // Check if result is already memoized
+    if memoTable.contains(memoKey):
+        result = memoTable.get(memoKey)
+        // Transform result back to current orientation
+        return transformHashBySymmetry(result, symmetryIndex, false)
+
+    // Initialize result array
+    hashes = new arr9(all zeros)
+
+    // Try all possible moves
+    for each empty position i on the board:
+        captureFound = false
+
+        // Try all valid capture combinations
+        for each valid mask:
+            // Check if this is a valid capture
+            if isValidCapture(state, i, mask):
+                captureFound = true
+
+                // Make a temporary board state with this move
+                tempState = state.copy()
+
+                // Place sum at position i
+                setValueAt(i, sum, tempState)
+
+                // Clear adjacent captured cells
+                for each adjacent position in this capture:
+                    setValueAt(adjacentPosition, 0, tempState)
+
+                // Recursive call
+                tempHashes = simulateCephalopods(tempState, depth-1)
+
+                // Add to result
+                for j from 0 to 8:
+                    hashes[j] += tempHashes[j]
+
+        // If no capture possible, place a '1' at this position
+        if not captureFound:
+            tempState = state.copy()
+            setValueAt(i, 1, tempState)
+
+            tempHashes = simulateCephalopods(tempState, depth-1)
+
+            for j from 0 to 8:
+                hashes[j] += tempHashes[j]
+
+    // Store result in memo table (in canonical form)
+    memoTable.insert(memoKey, transformHashBySymmetry(hashes, symmetryIndex, true))
+
+    return hashes
+
+// Board state representation utility functions
+function canonAndIndex(state):
+    // Generate all symmetric representations of the board
+    symmetries = generateAllSymmetries(state)
+
+    // Find minimum state among symmetries
+    minState = symmetries[0]
+    minIndex = 0
+
+    for i from 1 to 7:
+        if symmetries[i] < minState:
+            minState = symmetries[i]
+            minIndex = i
+
+    return [minState, minIndex]
+
+function transformHashBySymmetry(canonicalHash, symmetryIndex, reverse):
+    // Apply permutation to transform between canonical form and current orientation
+    permutation = reverse ? SYMMETRY_PERMUTATIONS_REV[symmetryIndex] : SYMMETRY_PERMUTATIONS[symmetryIndex]
+
+    result = new arr9()
+    for i from 0 to 8:
+        result[i] = canonicalHash[permutation[i]]
+
+    return result
+
+// Main program
+function main():
+    read maxDepth
+    state = 0  // Initialize state
+
+    // Read initial board state
+    for i from 0 to 2:
+        for j from 0 to 2:
+            read value
+            setValueAt(i*3 + j, value, state)
+
+    // Compute result
+    sums = simulateCephalopods(state, maxDepth)
+    result = convertToHash(sums) % MOD
+
+    print result
