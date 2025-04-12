@@ -374,15 +374,6 @@ s_array calculate_cases(s_array &res, uint64_t &copy, uint64_t &board, char &y, 
 s_array calculate(uint64_t &board, int moves, int &depth, short &rotates)
 {
         s_array res;
-        res.matrix[0][0] = (board & 7);
-          res.matrix[0][1] = ((board >> 3) & 7);
-          res.matrix[0][2] = ((board >> 6) & 7);
-          res.matrix[1][0] = ((board >> 9) & 7);
-          res.matrix[1][1] = ((board >> 12) & 7);
-          res.matrix[1][2] = ((board >> 15) & 7);
-          res.matrix[2][0] = ((board >> 18) & 7);
-          res.matrix[2][1] = ((board >> 21) & 7);
-          res.matrix[2][2] = ((board >> 24) & 7);
         if (moves == depth || is_end_game(board))
         {
           res.matrix[0][0] = (board & 7);
@@ -397,45 +388,62 @@ s_array calculate(uint64_t &board, int moves, int &depth, short &rotates)
           return (res);
         }
         uint64_t hashed = board << 8 | moves;
-        print_map(res.matrix);
+        uint64_t copy = board;
+       // print_map(res.matrix);
         #pragma GCC unroll 9
         for (rotates = 0; rotates < 9; rotates++)
         {
                 if (memory.find(hashed) != memory.end())
                 {
                         res = memory[hashed];
-                        cerr << "hi\n";
-                        print_map(res.matrix);
+                        //print_map(res.matrix);
+                        short r;
                         #pragma GCC unroll 9
-                        for (short r = 0; r < rotates; r++)
+                        for (r = 0; r < rotates; r++)
                         {
+                                cerr << "hiiiiiiiiiiiiiiiiiiiiiiiiiii\n";
                                 rrm(res.matrix);
-                                print_map(res.matrix);
+                               // print_map(res.matrix);
+                        }
+                        if (r > 0)
+                        {
+                                copy = 0;
+                                copy |= (res.matrix[0][0]);
+                                copy |= (res.matrix[0][1] << 3);
+                                copy |= (res.matrix[0][2] << 6);
+                                copy |= (res.matrix[1][0] << 9);
+                                copy |= (res.matrix[1][1] << 12);
+                                copy |= (res.matrix[1][2] << 15);
+                                copy |= (res.matrix[2][0] << 18);
+                                copy |= (res.matrix[2][1] << 21);
+                                copy |= (res.matrix[2][2] << 24);
+                                hashed = copy << 8 | moves;
+                                memory[hashed] = res;
                         }
                         return (res);
                 }
-                res.matrix[0][0] = (board & 7);
-                res.matrix[0][1] = ((board >> 3) & 7);
-                res.matrix[0][2] = ((board >> 6) & 7);
-                res.matrix[1][0] = ((board >> 9) & 7);
-                res.matrix[1][1] = ((board >> 12) & 7);
-                res.matrix[1][2] = ((board >> 15) & 7);
-                res.matrix[2][0] = ((board >> 18) & 7);
-                res.matrix[2][1] = ((board >> 21) & 7);
-                res.matrix[2][2] = ((board >> 24) & 7);
+                res.matrix[0][0] = (copy & 7);
+                res.matrix[0][1] = ((copy >> 3) & 7);
+                res.matrix[0][2] = ((copy >> 6) & 7);
+                res.matrix[1][0] = ((copy >> 9) & 7);
+                res.matrix[1][1] = ((copy >> 12) & 7);
+                res.matrix[1][2] = ((copy >> 15) & 7);
+                res.matrix[2][0] = ((copy >> 18) & 7);
+                res.matrix[2][1] = ((copy >> 21) & 7);
+                res.matrix[2][2] = ((copy >> 24) & 7);
                // print_map(res.matrix);
                 rm(res.matrix);
-                board = 0;
-                board |= (res.matrix[0][0]);
-                board |= (res.matrix[0][1] << 3);
-                board |= (res.matrix[0][2] << 6);
-                board |= (res.matrix[1][0] << 9);
-                board |= (res.matrix[1][1] << 12);
-                board |= (res.matrix[1][2] << 15);
-                board |= (res.matrix[2][0] << 18);
-                board |= (res.matrix[2][1] << 21);
-                board |= (res.matrix[2][2] << 24);
-                hashed = board << 8 | moves;
+                copy = 0;
+                copy |= (res.matrix[0][0]);
+                copy |= (res.matrix[0][1] << 3);
+                copy |= (res.matrix[0][2] << 6);
+                copy |= (res.matrix[1][0] << 9);
+                copy |= (res.matrix[1][1] << 12);
+                copy |= (res.matrix[1][2] << 15);
+                copy |= (res.matrix[2][0] << 18);
+                copy |= (res.matrix[2][1] << 21);
+                copy |= (res.matrix[2][2] << 24);
+                hashed = copy << 8 | moves;
         }
 
         res.matrix[0][0] = 0;
@@ -448,7 +456,6 @@ s_array calculate(uint64_t &board, int moves, int &depth, short &rotates)
         res.matrix[2][1] = 0;
         res.matrix[2][2] = 0;
 
-  uint64_t copy;
   int cases;
 
   moves++;
