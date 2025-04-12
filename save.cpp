@@ -374,6 +374,15 @@ s_array calculate_cases(s_array &res, uint64_t &copy, uint64_t &board, char &y, 
 s_array calculate(uint64_t &board, int moves, int &depth, short &rotates)
 {
         s_array res;
+        res.matrix[0][0] = (board & 7);
+          res.matrix[0][1] = ((board >> 3) & 7);
+          res.matrix[0][2] = ((board >> 6) & 7);
+          res.matrix[1][0] = ((board >> 9) & 7);
+          res.matrix[1][1] = ((board >> 12) & 7);
+          res.matrix[1][2] = ((board >> 15) & 7);
+          res.matrix[2][0] = ((board >> 18) & 7);
+          res.matrix[2][1] = ((board >> 21) & 7);
+          res.matrix[2][2] = ((board >> 24) & 7);
         if (moves == depth || is_end_game(board))
         {
           res.matrix[0][0] = (board & 7);
@@ -388,16 +397,20 @@ s_array calculate(uint64_t &board, int moves, int &depth, short &rotates)
           return (res);
         }
         uint64_t hashed = board << 8 | moves;
+        print_map(res.matrix);
         #pragma GCC unroll 9
         for (rotates = 0; rotates < 9; rotates++)
         {
                 if (memory.find(hashed) != memory.end())
                 {
                         res = memory[hashed];
+                        cerr << "hi\n";
+                        print_map(res.matrix);
                         #pragma GCC unroll 9
                         for (short r = 0; r < rotates; r++)
                         {
                                 rrm(res.matrix);
+                                print_map(res.matrix);
                         }
                         return (res);
                 }
