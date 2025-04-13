@@ -30,7 +30,7 @@ using namespace std;
 	 uint32_t matrix[3][3];
 };
 
-s_array calculate(uint64_t &board, int moves, int &depth, short &rotates);
+s_array calculate(uint64_t &board, int moves, int &depth);
 
 unordered_map<uint64_t, s_array> memory;
 
@@ -151,34 +151,37 @@ void past_2_maps(uint32_t map1[3][3], uint32_t map2[3][3])
 
 void rm(uint32_t map[3][3])
 {
-        int save = map[2][2];
-        map[2][2] = map[2][1];
-        map[2][1] = map[2][0];
-        map[2][0] = map[1][2];
-        map[1][2] = map[1][1];
-        map[1][1] = map[1][0];
-        map[1][0] = map[0][2];
-        map[0][2] = map[0][1];
-        map[0][1] = map[0][0];
-        map[0][0] = save;
+        int save = map[0][0];
+        map[0][0] = map[2][0];
+        map[2][0] = map[2][2];
+        map[2][2] = map[0][2];
+        map[0][2] = save;
+
+        save = map[0][1];
+        map[0][1] = map[1][0];
+        map[1][0] = map[2][1];
+        map[2][1] = map[1][2];
+        map[1][2] = save;
 }
 
 void rrm(uint32_t map[3][3])
 {
         int save = map[0][0];
-        map[0][0] = map[0][1];
-        map[0][1] = map[0][2];
-    map[0][2] = map[1][0];
-    map[1][0] = map[1][1];
-    map[1][1] = map[1][2];
-    map[1][2] = map[2][0];
-    map[2][0] = map[2][1];
-    map[2][1] = map[2][2];
-    map[2][2] = save;
+        map[0][0] = map[0][2];
+        map[0][2] = map[2][2];
+        map[2][2] = map[2][0];
+        map[2][0] = save;
+
+        save = map[0][1];
+        map[0][1] = map[1][2];
+        map[1][2] = map[2][1];
+        map[2][1] = map[1][0];
+        map[1][0] = save;
+
 }
 
 s_array calculate_cases(s_array &res, uint64_t &copy, uint64_t &board, char &y, char &x, int moves,
-                    int &depth, int &cases, short &rotates)
+                    int &depth, int &cases)
 {
 
   if (x + 1 < 3 && x - 1 >= 0 && ((board >> (y * 9 + (x + 1) * 3)) & 7) &&
@@ -193,7 +196,7 @@ s_array calculate_cases(s_array &res, uint64_t &copy, uint64_t &board, char &y, 
              << (y * 9 + x * 3));
     copy &= ~(7 << (y * 9 + (x + 1) * 3));
     copy &= ~(7 << (y * 9 + (x - 1) * 3));
-    past_2_maps(res.matrix, calculate(copy, moves, depth, rotates).matrix);
+    past_2_maps(res.matrix, calculate(copy, moves, depth).matrix);
   }
   if (y + 1 < 3 && y - 1 >= 0 && ((board >> ((y + 1) * 9 + x * 3)) & 7) != 0 &&
       ((board >> ((y - 1) * 9 + x * 3)) & 7) != 0 &&
@@ -207,7 +210,7 @@ s_array calculate_cases(s_array &res, uint64_t &copy, uint64_t &board, char &y, 
              << (y * 9 + x * 3));
     copy &= ~(7 << ((y + 1) * 9 + x * 3));
     copy &= ~(7 << ((y - 1) * 9 + x * 3));
-    past_2_maps(res.matrix, calculate(copy, moves, depth, rotates).matrix);
+    past_2_maps(res.matrix, calculate(copy, moves, depth).matrix);
   }
   ///////////////////////////////////////////////////////////////////////////////////
   if (y + 1 < 3 && x - 1 >= 0 && ((board >> ((y + 1) * 9 + x * 3)) & 7) &&
@@ -222,7 +225,7 @@ s_array calculate_cases(s_array &res, uint64_t &copy, uint64_t &board, char &y, 
              << (y * 9 + x * 3));
     copy &= ~(7 << ((y + 1) * 9 + x * 3));
     copy &= ~(7 << (y * 9 + (x - 1) * 3));
-    past_2_maps(res.matrix, calculate(copy, moves, depth, rotates).matrix);
+    past_2_maps(res.matrix, calculate(copy, moves, depth).matrix);
   }
   if (x + 1 < 3 && y + 1 < 3 && ((board >> ((y + 1) * 9 + x * 3)) & 7) &&
       ((board >> (y * 9 + (x + 1) * 3)) & 7) &&
@@ -236,7 +239,7 @@ s_array calculate_cases(s_array &res, uint64_t &copy, uint64_t &board, char &y, 
              << (y * 9 + x * 3));
     copy &= ~(7 << (y * 9 + (x + 1) * 3));
     copy &= ~(7 << ((y + 1) * 9 + x * 3));
-    past_2_maps(res.matrix, calculate(copy, moves, depth, rotates).matrix);
+    past_2_maps(res.matrix, calculate(copy, moves, depth).matrix);
   }
   ///////////////////////////////////////////////////////////////////////////////////
   if (x - 1 >= 0 && y - 1 >= 0 && ((board >> ((y - 1) * 9 + x * 3)) & 7) &&
@@ -251,7 +254,7 @@ s_array calculate_cases(s_array &res, uint64_t &copy, uint64_t &board, char &y, 
              << (y * 9 + x * 3));
     copy &= ~(7 << ((y - 1) * 9 + x * 3));
     copy &= ~(7 << (y * 9 + (x - 1) * 3));
-    past_2_maps(res.matrix, calculate(copy, moves, depth, rotates).matrix);
+    past_2_maps(res.matrix, calculate(copy, moves, depth).matrix);
   }
   if (x + 1 < 3 && y - 1 >= 0 && ((board >> ((y - 1) * 9 + x * 3)) & 7) &&
       ((board >> (y * 9 + (x + 1) * 3)) & 7) &&
@@ -265,7 +268,7 @@ s_array calculate_cases(s_array &res, uint64_t &copy, uint64_t &board, char &y, 
              << (y * 9 + x * 3));
     copy &= ~(7 << ((y - 1) * 9 + x * 3));
     copy &= ~(7 << (y * 9 + (x + 1) * 3));
-    past_2_maps(res.matrix, calculate(copy, moves, depth, rotates).matrix);
+    past_2_maps(res.matrix, calculate(copy, moves, depth).matrix);
   }
   ///////////////////////////////////////////////////////////////////////////////////
   if (x + 1 < 3 && x - 1 >= 0 && y + 1 < 3 && y - 1 >= 0 &&
@@ -289,7 +292,7 @@ s_array calculate_cases(s_array &res, uint64_t &copy, uint64_t &board, char &y, 
     copy &= ~(7 << ((y + 1) * 9 + x * 3));
     copy &= ~(7 << (y * 9 + (x + 1) * 3));
     copy &= ~(7 << (y * 9 + (x - 1) * 3));
-    past_2_maps(res.matrix, calculate(copy, moves, depth, rotates).matrix);
+    past_2_maps(res.matrix, calculate(copy, moves, depth).matrix);
   }
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   if (x - 1 >= 0 && y + 1 < 3 && y - 1 >= 0 &&
@@ -309,7 +312,7 @@ s_array calculate_cases(s_array &res, uint64_t &copy, uint64_t &board, char &y, 
     copy &= ~(7 << ((y - 1) * 9 + x * 3));
     copy &= ~(7 << ((y + 1) * 9 + x * 3));
     copy &= ~(7 << (y * 9 + (x - 1) * 3));
-    past_2_maps(res.matrix, calculate(copy, moves, depth, rotates).matrix);
+    past_2_maps(res.matrix, calculate(copy, moves, depth).matrix);
   }
   if (x + 1 < 3 && y + 1 < 3 && y - 1 >= 0 &&
       ((board >> ((y - 1) * 9 + x * 3)) & 7) &&
@@ -328,7 +331,7 @@ s_array calculate_cases(s_array &res, uint64_t &copy, uint64_t &board, char &y, 
     copy &= ~(7 << ((y - 1) * 9 + x * 3));
     copy &= ~(7 << ((y + 1) * 9 + x * 3));
     copy &= ~(7 << (y * 9 + (x + 1) * 3));
-    past_2_maps(res.matrix, calculate(copy, moves, depth, rotates).matrix);
+    past_2_maps(res.matrix, calculate(copy, moves, depth).matrix);
   }
   if (x + 1 < 3 && x - 1 >= 0 && y - 1 >= 0 &&
       ((board >> ((y - 1) * 9 + x * 3)) & 7) &&
@@ -347,7 +350,7 @@ s_array calculate_cases(s_array &res, uint64_t &copy, uint64_t &board, char &y, 
     copy &= ~(7 << ((y - 1) * 9 + x * 3));
     copy &= ~(7 << (y * 9 + (x + 1) * 3));
     copy &= ~(7 << (y * 9 + (x - 1) * 3));
-    past_2_maps(res.matrix, calculate(copy, moves, depth, rotates).matrix);
+    past_2_maps(res.matrix, calculate(copy, moves, depth).matrix);
   }
   if (x + 1 < 3 && x - 1 >= 0 && y + 1 < 3 &&
       ((board >> ((y + 1) * 9 + x * 3)) & 7) &&
@@ -366,12 +369,12 @@ s_array calculate_cases(s_array &res, uint64_t &copy, uint64_t &board, char &y, 
     copy &= ~(7 << ((y + 1) * 9 + x * 3));
     copy &= ~(7 << (y * 9 + (x + 1) * 3));
     copy &= ~(7 << (y * 9 + (x - 1) * 3));
-    past_2_maps(res.matrix, calculate(copy, moves, depth, rotates).matrix);
+    past_2_maps(res.matrix, calculate(copy, moves, depth).matrix);
   }
   return (res);
 }
 
-s_array calculate(uint64_t &board, int moves, int &depth, short &rotates)
+s_array calculate(uint64_t &board, int moves, int &depth)
 {
         s_array res;
         if (moves == depth || is_end_game(board))
@@ -387,11 +390,11 @@ s_array calculate(uint64_t &board, int moves, int &depth, short &rotates)
           res.matrix[2][2] = ((board >> 24) & 7);
           return (res);
         }
-        uint64_t hashed = board << 8 | moves;
+        uint64_t hashed = board << 32 | moves;
         uint64_t copy = board;
        // print_map(res.matrix);
         #pragma GCC unroll 9
-        for (rotates = 0; rotates < 9; rotates++)
+        for (short rotates = 0; rotates < 4; rotates++)
         {
                 if (memory.find(hashed) != memory.end())
                 {
@@ -401,7 +404,7 @@ s_array calculate(uint64_t &board, int moves, int &depth, short &rotates)
                         #pragma GCC unroll 9
                         for (r = 0; r < rotates; r++)
                         {
-                                cerr << "hiiiiiiiiiiiiiiiiiiiiiiiiiii\n";
+                               // cerr << "hiiiiiiiiiiiiiiiiiiiiiiiiiii\n";
                                 rrm(res.matrix);
                                // print_map(res.matrix);
                         }
@@ -417,7 +420,7 @@ s_array calculate(uint64_t &board, int moves, int &depth, short &rotates)
                                 copy |= (res.matrix[2][0] << 18);
                                 copy |= (res.matrix[2][1] << 21);
                                 copy |= (res.matrix[2][2] << 24);
-                                hashed = copy << 8 | moves;
+                                hashed = copy << 32 | moves;
                                 memory[hashed] = res;
                         }
                         return (res);
@@ -431,7 +434,7 @@ s_array calculate(uint64_t &board, int moves, int &depth, short &rotates)
                 res.matrix[2][0] = ((copy >> 18) & 7);
                 res.matrix[2][1] = ((copy >> 21) & 7);
                 res.matrix[2][2] = ((copy >> 24) & 7);
-               // print_map(res.matrix);
+               //print_map(res.matrix);
                 rm(res.matrix);
                 copy = 0;
                 copy |= (res.matrix[0][0]);
@@ -443,7 +446,7 @@ s_array calculate(uint64_t &board, int moves, int &depth, short &rotates)
                 copy |= (res.matrix[2][0] << 18);
                 copy |= (res.matrix[2][1] << 21);
                 copy |= (res.matrix[2][2] << 24);
-                hashed = copy << 8 | moves;
+                hashed = copy << 32 | moves;
         }
 
         res.matrix[0][0] = 0;
@@ -468,14 +471,14 @@ s_array calculate(uint64_t &board, int moves, int &depth, short &rotates)
       if (!((board >> (i * 9 + j * 3)) & 7))
       {
         cases = 0;
-        calculate_cases(res ,copy, board, i, j, moves, depth, cases, rotates);
+        calculate_cases(res ,copy, board, i, j, moves, depth, cases);
         //if (cases)
         //        past_2_maps(res.matrix, res2.matrix);
         if (!cases)
         {
                 copy = board;
                 copy |= (1 << (i * 9 + j * 3));
-                past_2_maps(res.matrix, calculate(copy, moves, depth, rotates).matrix);
+                past_2_maps(res.matrix, calculate(copy, moves, depth).matrix);
         }
       }
     }
@@ -518,12 +521,7 @@ int main() {
   // 	((board >> 21) & 7) * 10 +
   // 	((board >> 24) & 7));
 
-        short rotates = 0;
-        map = calculate(board, 0, depth, rotates);
-        // for (short r = rotates; r < 9; r++)
-        // {
-        //         rm(map.matrix);
-        // }
+        map = calculate(board, 0, depth);
         final_result = (final_result + (map.matrix[0][0] * 100000000) % (1<<30)) % (1<<30);
         final_result = (final_result + (map.matrix[0][1] * 10000000) % (1<<30)) % (1<<30);
         final_result = (final_result + (map.matrix[0][2] * 1000000) % (1<<30)) % (1<<30);
